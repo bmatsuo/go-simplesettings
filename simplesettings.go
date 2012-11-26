@@ -50,10 +50,16 @@ type Settings struct {
 
 func (s Settings) Get(key string) Interface {
 	path := append(s.path, key)
-	if m, ok := s.data.(map[string]interface{}); ok {
+	switch s.data.(type) {
+	case Map:
 		return Settings{
 			path: path,
-			data: m[key],
+			data: s.data.(Map)[key],
+		}
+	case map[string]interface{}:
+		return Settings{
+			path: path,
+			data: s.data.(map[string]interface{})[key],
 		}
 	}
 	return Settings{
